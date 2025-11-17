@@ -8,6 +8,13 @@ createApp({
             sortField: 'subject',
             sortAsc: true,
             cart: [],
+            checkoutSuccess: false,
+            checkoutForm: {
+                name: '',
+                phone: '',
+                nameError: false,
+                phoneError: false
+            },
             lessons: [
                 {
                     id: 1,
@@ -229,6 +236,32 @@ createApp({
         canIncreaseQuantity(lessonId) {
             const lesson = this.lessons.find(l => l.id === lessonId);
             return lesson && lesson.slots > 0;
+        },
+        isCheckoutValid() {
+            const nameRegex = /^[a-zA-Z\s]+$/;
+            const phoneRegex = /^[0-9]+$/;
+
+            this.checkoutForm.nameError = !nameRegex.test(this.checkoutForm.name) || this.checkoutForm.name.trim() === '';
+            this.checkoutForm.phoneError = !phoneRegex.test(this.checkoutForm.phone) || this.checkoutForm.phone.trim() === '';
+
+            return !this.checkoutForm.nameError && !this.checkoutForm.phoneError;
+        },
+        checkout() {
+            if (this.isCheckoutValid()) {
+                this.checkoutSuccess = true;
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    this.cart = [];
+                    this.checkoutForm = {
+                        name: '',
+                        phone: '',
+                        nameError: false,
+                        phoneError: false
+                    };
+                    this.checkoutSuccess = false;
+                    this.currentPage = 'lessons';
+                }, 3000);
+            }
         }
     }
 }).mount('#app');
