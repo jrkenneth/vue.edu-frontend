@@ -18,6 +18,46 @@
         </nav>
         <!-- Main Content -->
         <div class="container-main">
+            <!-- Lesson Page -->
+            <div v-if="currentPage === 'lessons'">
+                <h1 class="page-title">Available Classes</h1>
+                <p class="page-subtitle">Choose from our wide range of after-school activities</p>
+
+                <!-- Search Section -->
+
+
+                <!-- Sort Section -->
+
+
+                <!-- Lessons Grid -->
+                <div v-if="filteredLessons.length > 0" class="row g-4">
+                    <div v-for="lesson in filteredLessons" :key="lesson.id" class="col-md-6 col-lg-4">
+                        <div class="card lesson-card">
+                            <img :src="lesson.image" :alt="lesson.subject" class="lesson-image">
+                            <div class="card-body lesson-body">
+                                <h5 class="lesson-title">{{ lesson.subject }}</h5>
+                                <p class="lesson-meta">📍 {{ lesson.location }}</p>
+                                <p class="lesson-meta">👨‍🏫 Instructor: {{ lesson.instructor }}</p>
+                                <div :class="['slots-badge', { full: lesson.slots === 0 }]">
+                                    {{ lesson.slots > 0 ? `${lesson.slots} slots available` : 'No slots available' }}
+                                </div>
+                                <div class="price-tag">${{ lesson.price }}</div>
+                                <button 
+                                    v-on:click="addToCart(lesson)" 
+                                    :disabled="lesson.slots === 0"
+                                    class="btn btn-add-cart w-100"
+                                >
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="no-results">
+                    <p>No lessons found matching your search. Try different keywords!</p>
+                </div>
+            </div>
 
         </div>
     </div>
