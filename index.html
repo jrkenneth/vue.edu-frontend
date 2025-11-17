@@ -127,7 +127,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div>
+                            <div class="cart-item-price">${{ item.price }} × {{ item.quantity }}</div>
+                            <div style="font-size: 1rem; color: #666; text-align: right; margin-top: 0.25rem;">
+                                Subtotal: ${{ item.price * item.quantity }}
+                            </div>
+                        </div>
+                        <button 
+                            v-on:click="removeFromCart(item.id)" 
+                            class="btn btn-outline-danger"
+                        >
+                            Remove All
+                        </button>
                     </div>
+                    <div class="total-section">
+                        Total: ${{ cartTotal }}
+                    </div>
+
+                    <!-- Checkout Form -->
                 </div>
                 <div v-else class="empty-cart">
                     <div class="empty-cart-icon">🛒</div>

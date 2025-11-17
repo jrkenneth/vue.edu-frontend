@@ -144,6 +144,9 @@ createApp({
             });
 
             return filtered;
+        },
+        cartTotal() {
+            return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         }
     },
     methods: {
@@ -181,6 +184,51 @@ createApp({
 
             // Reduce slots
             lesson.slots--;
+        },
+        removeFromCart(lessonId) {
+            const cartIndex = this.cart.findIndex(item => item.id === lessonId);
+            if (cartIndex > -1) {
+                const item = this.cart[cartIndex];
+                // Add all slots back
+                const lesson = this.lessons.find(l => l.id === lessonId);
+                if (lesson) {
+                    lesson.slots += item.quantity;
+                }
+                // Remove from cart
+                this.cart.splice(cartIndex, 1);
+            }
+        },
+        increaseQuantity(lessonId) {
+            const lesson = this.lessons.find(l => l.id === lessonId);
+            if (lesson && lesson.slots > 0) {
+                const cartItem = this.cart.find(item => item.id === lessonId);
+                if (cartItem) {
+                    cartItem.quantity++;
+                    lesson.slots--;
+                }
+            } else {
+                const cartItem = this.cart.find(item => item.id === lessonId);
+                alert(`Sorry! No more slots available for ${cartItem.subject}.`);
+            }
+        },
+        decreaseQuantity(lessonId) {
+            const cartItem = this.cart.find(item => item.id === lessonId);
+            if (cartItem) {
+                if (cartItem.quantity > 1) {
+                    cartItem.quantity--;
+                    const lesson = this.lessons.find(l => l.id === lessonId);
+                    if (lesson) {
+                        lesson.slots++;
+                    }
+                } else {
+                    // If quantity is 1, remove the item entirely
+                    this.removeFromCart(lessonId);
+                }
+            }
+        },
+        canIncreaseQuantity(lessonId) {
+            const lesson = this.lessons.find(l => l.id === lessonId);
+            return lesson && lesson.slots > 0;
         }
     }
 }).mount('#app');
