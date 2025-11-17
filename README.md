@@ -10,7 +10,7 @@ An app to book lessons for after-school tutoring - Vue.js Frontend
 - Responsive design with Bootstrap
 
 ## Live Demo
-[Your GitHub Pages URL will go here - see deployment instructions]
+(https://jrkenneth.github.io/vue.edu-frontend/)
 
 ## Tech Stack
 - Vue.js 3
