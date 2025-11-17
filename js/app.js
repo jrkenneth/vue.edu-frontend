@@ -4,6 +4,8 @@ createApp({
     data() {
         return {
             currentPage: 'lessons',
+            sortField: 'subject',
+            sortAsc: true,
             lessons: [
                 {
                     id: 1,
@@ -108,9 +110,35 @@ createApp({
         };
     },
     computed: {
-        
+        filteredLessons() {
+            let filtered = this.lessons;
+
+            // Sort
+            filtered.sort((a, b) => {
+                let aVal = a[this.sortField];
+                let bVal = b[this.sortField];
+
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+
+                if (aVal < bVal) return this.sortAsc ? -1 : 1;
+                if (aVal > bVal) return this.sortAsc ? 1 : -1;
+                return 0;
+            });
+
+            return filtered;
+        }
     },
     methods: {
-        
+        sortBy(field) {
+            if (this.sortField === field) {
+                this.sortAsc = !this.sortAsc;
+            } else {
+                this.sortField = field;
+                this.sortAsc = true;
+            }
+        }
     }
 }).mount('#app');

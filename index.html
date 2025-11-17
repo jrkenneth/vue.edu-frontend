@@ -27,7 +27,32 @@
 
 
                 <!-- Sort Section -->
-
+                <div class="sort-container">
+                    <button 
+                        v-on:click="sortBy('subject')" 
+                        :class="['sort-btn', { active: sortField === 'subject' }]"
+                    >
+                        Subject {{ sortField === 'subject' ? (sortAsc ? '↑' : '↓') : '' }}
+                    </button>
+                    <button 
+                        v-on:click="sortBy('location')" 
+                        :class="['sort-btn', { active: sortField === 'location' }]"
+                    >
+                        Location {{ sortField === 'location' ? (sortAsc ? '↑' : '↓') : '' }}
+                    </button>
+                    <button 
+                        v-on:click="sortBy('price')" 
+                        :class="['sort-btn', { active: sortField === 'price' }]"
+                    >
+                        Price {{ sortField === 'price' ? (sortAsc ? '↑' : '↓') : '' }}
+                    </button>
+                    <button 
+                        v-on:click="sortBy('slots')" 
+                        :class="['sort-btn', { active: sortField === 'slots' }]"
+                    >
+                        Available Slots {{ sortField === 'slots' ? (sortAsc ? '↑' : '↓') : '' }}
+                    </button>
+                </div>
 
                 <!-- Lessons Grid -->
                 <div v-if="filteredLessons.length > 0" class="row g-4">
@@ -59,7 +84,10 @@
                 </div>
             </div>
 
+            <!-- Cart Page -->
+
         </div>
+        <!-- Cart Button -->
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
     <script src="js/app.js"></script>
