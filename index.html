@@ -92,9 +92,66 @@
             </div>
 
             <!-- Cart Page -->
-
+            <div v-if="currentPage === 'cart'">
+                <button v-on:click="currentPage = 'lessons'" class="back-btn">← Back to Lessons</button>
+                
+                <h1 class="page-title">Shopping Cart</h1>
+                
+                <div v-if="cart.length > 0">
+                    <div v-for="item in cart" :key="item.id" class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-subject">{{ item.subject }}</div>
+                            <div class="cart-item-detail">📍 {{ item.location }}</div>
+                            <div class="cart-item-detail">👨‍🏫 Instructor: {{ item.instructor }}</div>
+                            <div style="margin-top: 1rem; display: flex; align-items: center; gap: 1rem;">
+                                <span style="font-weight: 600; color: #333;">Quantity:</span>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <button 
+                                        v-on:click="decreaseQuantity(item.id)"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        style="width: 32px; height: 32px; padding: 0; font-weight: bold;"
+                                    >
+                                        −
+                                    </button>
+                                    <span style="font-size: 1.1rem; font-weight: 600; min-width: 40px; text-align: center;">
+                                        {{ item.quantity }}
+                                    </span>
+                                    <button 
+                                        v-on:click="increaseQuantity(item.id)"
+                                        :disabled="!canIncreaseQuantity(item.id)"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        style="width: 32px; height: 32px; padding: 0; font-weight: bold;"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="empty-cart">
+                    <div class="empty-cart-icon">🛒</div>
+                    <p style="font-size: 1.2rem; margin-bottom: 1rem;">Your cart is empty</p>
+                    <button 
+                        v-on:click="currentPage = 'lessons'" 
+                        class="btn btn-primary"
+                    >
+                        Continue Shopping
+                    </button>
+                </div>
+            </div>
         </div>
         <!-- Cart Button -->
+        <div class="cart-btn-container">
+            <button 
+                v-on:click="currentPage = currentPage === 'cart' ? 'lessons' : 'cart'" 
+                :disabled="cart.length === 0"
+                class="btn btn-cart"
+            >
+                🛒 Cart
+                <span v-if="cart.length > 0" class="cart-badge">{{ cart.length }}</span>
+            </button>
+        </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
     <script src="js/app.js"></script>

@@ -7,6 +7,7 @@ createApp({
             searchQuery: '',
             sortField: 'subject',
             sortAsc: true,
+            cart: [],
             lessons: [
                 {
                     id: 1,
@@ -153,6 +154,33 @@ createApp({
                 this.sortField = field;
                 this.sortAsc = true;
             }
+        },
+        addToCart(lesson) {
+            // Check if slots are available
+            if (lesson.slots === 0) {
+                alert(`Sorry! All slots for ${lesson.subject} have been exhausted.`);
+                return;
+            }
+
+            // Check if lesson already in cart
+            const existingItem = this.cart.find(item => item.id === lesson.id);
+            if (existingItem) {
+                // Increase quantity
+                existingItem.quantity++;
+            } else {
+                // Add new item to cart
+                this.cart.push({
+                    id: lesson.id,
+                    subject: lesson.subject,
+                    location: lesson.location,
+                    price: lesson.price,
+                    instructor: lesson.instructor,
+                    quantity: 1
+                });
+            }
+
+            // Reduce slots
+            lesson.slots--;
         }
     }
 }).mount('#app');
