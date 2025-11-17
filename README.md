@@ -22,7 +22,7 @@ An app to book lessons for after-school tutoring - Vue.js Frontend
 ### Local Setup
 1. Clone this repository:
 ```bash
-    git clone https://github.com/YOUR-USERNAME/educlass-frontend.git
+    git clone https://github.com/jrkenneth/vue.edu-frontend.git
 ```
 
 2. Open `index.html` in a web browser
@@ -30,11 +30,15 @@ An app to book lessons for after-school tutoring - Vue.js Frontend
 ### Notes
 - No build process needed - this is a standalone HTML file
 - Future versions will integrate with Express.js backend API
-- Images are from Unsplash; easily swap image URLs in the lessons data
 
 ## Project Structure
 ```
 educlass-frontend/
+├── css/
+    ├── styles.css
+├── images/
+├── js/
+    ├── app.js
 ├── index.html      (Main application file)
 ├── README.md
 └── .gitignore
@@ -43,4 +47,4 @@ educlass-frontend/
 ## Future Integration
 - Backend API: Express.js with MongoDB
 - Search functionality will be powered by backend
-- Cart data may be persisted to backend
+- Cart data will be persisted to backend
