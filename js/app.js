@@ -4,6 +4,7 @@ createApp({
     data() {
         return {
             currentPage: 'lessons',
+            searchQuery: '',
             sortField: 'subject',
             sortAsc: true,
             lessons: [
@@ -112,6 +113,19 @@ createApp({
     computed: {
         filteredLessons() {
             let filtered = this.lessons;
+
+            // Filter by search query
+            if (this.searchQuery.trim() !== '') {
+                const query = this.searchQuery.toLowerCase();
+                filtered = filtered.filter(lesson => {
+                    return (
+                        lesson.subject.toLowerCase().includes(query) ||
+                        lesson.location.toLowerCase().includes(query) ||
+                        lesson.instructor.toLowerCase().includes(query) ||
+                        lesson.price.toString().includes(query)
+                    );
+                });
+            }
 
             // Sort
             filtered.sort((a, b) => {
