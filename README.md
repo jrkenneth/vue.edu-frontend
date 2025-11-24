@@ -1,4 +1,4 @@
-# vue.edu-frontend
+# EduClass Frontend API
 An app to book lessons for after-school tutoring - Vue.js Frontend
 
 ## Features
@@ -33,7 +33,7 @@ An app to book lessons for after-school tutoring - Vue.js Frontend
 
 ## Project Structure
 ```
-educlass-frontend/
+vue.edu-frontend/
 ├── css/
     ├── styles.css
 ├── images/
@@ -44,7 +44,7 @@ educlass-frontend/
 └── .gitignore
 ```
 
-## Future Integration
-- Backend API: Express.js with MongoDB
-- Search functionality will be powered by backend
-- Cart data will be persisted to backend
+## Backend API
+🔗 Backend Repository: https://github.com/jrkenneth/vue.edu-backend
+🌐 Live API: https://edu-backend-ken.onrender.com/
+📚 All Lessons: https://edu-backend-ken.onrender.com/lessons
