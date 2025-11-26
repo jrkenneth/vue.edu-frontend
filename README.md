@@ -43,7 +43,19 @@ vue.edu-frontend/
 └── .gitignore
 ```
 
-## Backend API
+## Backend Integration
 🔗 Backend Repository: https://github.com/jrkenneth/vue.edu-backend
 🌐 Live API: https://edu-backend-ken.onrender.com/
 📚 All Lessons: https://edu-backend-ken.onrender.com/lessons
+
+### API Endpoints Used
+- `GET /lessons` - Fetch all available lessons
+- `GET /search?q=query` - Search lessons in real-time
+- `POST /orders` - Submit new order
+- `PUT /lessons/:id` - Update lesson slots after purchase
+
+### Features
+- Real-time search powered by backend
+- Data persistence with MongoDB Atlas
+- Order submission and tracking
+- Automatic slot updates after purchase

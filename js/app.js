@@ -191,9 +191,57 @@ createApp({
 
             return !this.checkoutForm.nameError && !this.checkoutForm.phoneError;
         },
-        checkout() {
-            if (this.isCheckoutValid()) {
+        async checkout() {
+            if (!this.isCheckoutValid()) {
+                return;
+            }
+
+            try {
+                // Prepare order data
+                const orderData = {
+                    name: this.checkoutForm.name,
+                    phone: this.checkoutForm.phone,
+                    items: this.cart.map(item => ({
+                        lessonId: item._id,
+                        subject: item.subject,
+                        quantity: item.quantity,
+                        price: item.price
+                    })),
+                    total: this.cartTotal
+                };
+
+                // Submit order to backend
+                const orderResponse = await fetch(`${this.API_URL}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (!orderResponse.ok) {
+                    throw new Error('Failed to submit order');
+                }
+
+                // Update lesson slots in backend
+                for (const item of this.cart) {
+                    const lesson = this.lessons.find(l => l._id === item._id);
+                    if (lesson) {
+                        await fetch(`${this.API_URL}/lessons/${lesson._id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                slots: lesson.slots
+                            })
+                        });
+                    }
+                }
+
+                // Show success message
                 this.checkoutSuccess = true;
+
                 // Reset after 3 seconds
                 setTimeout(() => {
                     this.cart = [];
@@ -201,11 +249,16 @@ createApp({
                         name: '',
                         phone: '',
                         nameError: false,
-                        phoneError: false 
+                        phoneError: false
                     };
                     this.checkoutSuccess = false;
                     this.currentPage = 'lessons';
+                    // Refresh lessons from backend
+                    this.fetchLessons();
                 }, 3000);
+            } catch (error) {
+                console.error('Error during checkout:', error);
+                alert('Failed to complete order. Please try again.');
             }
         }
     }
