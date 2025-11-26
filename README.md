@@ -44,7 +44,7 @@ vue.edu-frontend/
 ```
 
 ## Backend Integration
-🔗 Backend Repository: https://github.com/jrkenneth/vue.edu-backend
+🔗 Backend Repository: https://github.com/jrkenneth/express.edu-backend
 🌐 Live API: https://edu-backend-ken.onrender.com/
 📚 All Lessons: https://edu-backend-ken.onrender.com/lessons
 
