@@ -62,8 +62,15 @@
                 </div>
 
                 <!-- Lessons Grid -->
+                <div v-if="loading" class="text-center" style="padding: 3rem;">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p style="margin-top: 1rem; color: #666;">Loading lessons...</p>
+                </div>
+
                 <div v-if="filteredLessons.length > 0" class="row g-4">
-                    <div v-for="lesson in filteredLessons" :key="lesson.id" class="col-md-6 col-lg-4">
+                    <div v-for="lesson in filteredLessons" :key="lesson._id || lesson.id" class="col-md-6 col-lg-4">
                         <div class="card lesson-card">
                             <img :src="lesson.image" :alt="lesson.subject" class="lesson-image">
                             <div class="card-body lesson-body">
@@ -98,7 +105,7 @@
                 <h1 class="page-title">Shopping Cart</h1>
                 
                 <div v-if="cart.length > 0">
-                    <div v-for="item in cart" :key="item.id" class="cart-item">
+                    <div v-for="item in cart" :key="item._id || item.id" class="cart-item">
                         <div class="cart-item-info">
                             <div class="cart-item-subject">{{ item.subject }}</div>
                             <div class="cart-item-detail">📍 {{ item.location }}</div>
@@ -107,7 +114,7 @@
                                 <span style="font-weight: 600; color: #333;">Quantity:</span>
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <button 
-                                        v-on:click="decreaseQuantity(item.id)"
+                                        v-on:click="decreaseQuantity(item._id || item.id)"
                                         class="btn btn-sm btn-outline-secondary"
                                         style="width: 32px; height: 32px; padding: 0; font-weight: bold;"
                                     >
@@ -117,8 +124,8 @@
                                         {{ item.quantity }}
                                     </span>
                                     <button 
-                                        v-on:click="increaseQuantity(item.id)"
-                                        :disabled="!canIncreaseQuantity(item.id)"
+                                        v-on:click="increaseQuantity(item._id || item.id)"
+                                        :disabled="!canIncreaseQuantity(item._id || item.id)"
                                         class="btn btn-sm btn-outline-secondary"
                                         style="width: 32px; height: 32px; padding: 0; font-weight: bold;"
                                     >
@@ -134,7 +141,7 @@
                             </div>
                         </div>
                         <button 
-                            v-on:click="removeFromCart(item.id)" 
+                            v-on:click="removeFromCart(item._id || item.id)" 
                             class="btn btn-outline-danger"
                         >
                             Remove All
@@ -201,7 +208,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Cart Button -->
         <div class="cart-btn-container">
             <button 

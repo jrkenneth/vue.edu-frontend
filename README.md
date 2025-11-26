@@ -36,7 +36,6 @@ An app to book lessons for after-school tutoring - Vue.js Frontend
 vue.edu-frontend/
 ├── css/
     ├── styles.css
-├── images/
 ├── js/
     ├── app.js
 ├── index.html      (Main application file)

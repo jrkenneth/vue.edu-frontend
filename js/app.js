@@ -15,128 +15,29 @@ createApp({
                 nameError: false,
                 phoneError: false
             },
-            lessons: [
-                {
-                    id: 1,
-                    subject: 'Mathematics',
-                    location: 'Room 101',
-                    price: 45,
-                    slots: 5,
-                    instructor: 'Mr. Johnson',
-                    image: ''
-                },
-                {
-                    id: 2,
-                    subject: 'English Literature',
-                    location: 'Room 202',
-                    price: 40,
-                    slots: 5,
-                    instructor: 'Ms. Smith',
-                    image: ''
-                },
-                {
-                    id: 3,
-                    subject: 'Science Lab',
-                    location: 'Lab Building',
-                    price: 55,
-                    slots: 5,
-                    instructor: 'Dr. Brown',
-                    image: ''
-                },
-                {
-                    id: 4,
-                    subject: 'Spanish Conversation',
-                    location: 'Room 305',
-                    price: 35,
-                    slots: 5,
-                    instructor: 'Señora Garcia',
-                    image: ''
-                },
-                {
-                    id: 5,
-                    subject: 'Piano Lessons',
-                    location: 'Music Studio',
-                    price: 60,
-                    slots: 5,
-                    instructor: 'Mr. Davis',
-                    image: ''
-                },
-                {
-                    id: 6,
-                    subject: 'Soccer Training',
-                    location: 'Sports Field',
-                    price: 30,
-                    slots: 5,
-                    instructor: 'Coach Martinez',
-                    image: ''
-                },
-                {
-                    id: 7,
-                    subject: 'Art & Design',
-                    location: 'Art Studio',
-                    price: 50,
-                    slots: 5,
-                    instructor: 'Ms. Wilson',
-                    image: ''
-                },
-                {
-                    id: 8,
-                    subject: 'Computer Programming',
-                    location: 'Computer Lab',
-                    price: 65,
-                    slots: 5,
-                    instructor: 'Mr. Kumar',
-                    image: ''
-                },
-                {
-                    id: 9,
-                    subject: 'Debate Club',
-                    location: 'Room 401',
-                    price: 25,
-                    slots: 5,
-                    instructor: 'Ms. Anderson',
-                    image: ''
-                },
-                {
-                    id: 10,
-                    subject: 'Robotics Workshop',
-                    location: 'Innovation Lab',
-                    price: 75,
-                    slots: 5,
-                    instructor: 'Mr. Chen',
-                    image: ''
-                },
-                {
-                    id: 11,
-                    subject: 'Chemistry Basics',
-                    location: 'Lab Building',
-                    price: 50,
-                    slots: 5,
-                    instructor: 'Dr. Patel',
-                    image: ''
-                }
-            ]
+            API_URL: 'https://edu-backend-ken.onrender.com',
+            lessons: []
         };
+    },
+    mounted() {
+        // Fetch lessons from backend when component mounts
+        this.fetchLessons();
+    },
+    watch: {
+        // Watch for search query changes - debounced search
+        searchQuery(newQuery) {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                this.searchLessons(newQuery);
+            }, 300); // 300ms delay for "search as you type"
+        }
     },
     computed: {
         filteredLessons() {
-            let filtered = this.lessons;
-
-            // Filter by search query
-            if (this.searchQuery.trim() !== '') {
-                const query = this.searchQuery.toLowerCase();
-                filtered = filtered.filter(lesson => {
-                    return (
-                        lesson.subject.toLowerCase().includes(query) ||
-                        lesson.location.toLowerCase().includes(query) ||
-                        lesson.instructor.toLowerCase().includes(query) ||
-                        lesson.price.toString().includes(query)
-                    );
-                });
-            }
-
-            // Sort
-            filtered.sort((a, b) => {
+            // Sort the lessons
+            let sorted = [...this.lessons];
+            
+            sorted.sort((a, b) => {
                 let aVal = a[this.sortField];
                 let bVal = b[this.sortField];
 
@@ -150,13 +51,51 @@ createApp({
                 return 0;
             });
 
-            return filtered;
+            return sorted;
         },
         cartTotal() {
             return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         }
     },
     methods: {
+        // Fetch all lessons from backend
+        async fetchLessons() {
+            try {
+                this.loading = true;
+                const response = await fetch(`${this.API_URL}/lessons`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch lessons');
+                }
+                const data = await response.json();
+                this.lessons = data.map(lesson => ({
+                    ...lesson,
+                    image: lesson.image.startsWith('http') 
+                        ? lesson.image 
+                        : `${this.API_URL}${lesson.image}`
+                }));
+                this.loading = false;
+            } catch (error) {
+                console.error('Error fetching lessons:', error);
+                alert('Failed to load lessons. Please check if the backend server is running.');
+                this.loading = false;
+            }
+        },
+        // Search lessons via backend API
+        async searchLessons(query) {
+            try {
+                this.loading = true;
+                const response = await fetch(`${this.API_URL}/search?q=${encodeURIComponent(query)}`);
+                if (!response.ok) {
+                    throw new Error('Search failed');
+                }
+                const data = await response.json();
+                this.lessons = data;
+                this.loading = false;
+            } catch (error) {
+                console.error('Error searching lessons:', error);
+                this.loading = false;
+            }
+        },
         sortBy(field) {
             if (this.sortField === field) {
                 this.sortAsc = !this.sortAsc;
@@ -173,13 +112,15 @@ createApp({
             }
 
             // Check if lesson already in cart
-            const existingItem = this.cart.find(item => item.id === lesson.id);
+            const lessonId = lesson._id || lesson.id;
+            const existingItem = this.cart.find(item => (item._id || item.id) === lesson.id);
             if (existingItem) {
                 // Increase quantity
                 existingItem.quantity++;
             } else {
                 // Add new item to cart
                 this.cart.push({
+                    _id: lesson._id,
                     id: lesson.id,
                     subject: lesson.subject,
                     location: lesson.location,
@@ -193,11 +134,11 @@ createApp({
             lesson.slots--;
         },
         removeFromCart(lessonId) {
-            const cartIndex = this.cart.findIndex(item => item.id === lessonId);
+            const cartIndex = this.cart.findIndex(item => (item._id || item.id) === lessonId);
             if (cartIndex > -1) {
                 const item = this.cart[cartIndex];
                 // Add all slots back
-                const lesson = this.lessons.find(l => l.id === lessonId);
+                const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
                 if (lesson) {
                     lesson.slots += item.quantity;
                 }
@@ -206,9 +147,9 @@ createApp({
             }
         },
         increaseQuantity(lessonId) {
-            const lesson = this.lessons.find(l => l.id === lessonId);
+            const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
             if (lesson && lesson.slots > 0) {
-                const cartItem = this.cart.find(item => item.id === lessonId);
+                const cartItem = this.cart.find(item => (item._id || item.id) === lessonId);
                 if (cartItem) {
                     cartItem.quantity++;
                     lesson.slots--;
@@ -219,7 +160,7 @@ createApp({
             }
         },
         decreaseQuantity(lessonId) {
-            const cartItem = this.cart.find(item => item.id === lessonId);
+            const cartItem = this.cart.find(item => (item._id || item.id) === lessonId);
             if (cartItem) {
                 if (cartItem.quantity > 1) {
                     cartItem.quantity--;
@@ -256,7 +197,7 @@ createApp({
                         name: '',
                         phone: '',
                         nameError: false,
-                        phoneError: false
+                        phoneError: false 
                     };
                     this.checkoutSuccess = false;
                     this.currentPage = 'lessons';
