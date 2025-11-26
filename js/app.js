@@ -89,7 +89,12 @@ createApp({
                     throw new Error('Search failed');
                 }
                 const data = await response.json();
-                this.lessons = data;
+                this.lessons = data.map(lesson => ({
+                    ...lesson,
+                    image: lesson.image.startsWith('http') 
+                        ? lesson.image 
+                        : `${this.API_URL}${lesson.image}`
+                }));
                 this.loading = false;
             } catch (error) {
                 console.error('Error searching lessons:', error);
