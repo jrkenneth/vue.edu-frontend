@@ -169,7 +169,7 @@ createApp({
             if (cartItem) {
                 if (cartItem.quantity > 1) {
                     cartItem.quantity--;
-                    const lesson = this.lessons.find(l => l.id === lessonId);
+                    const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
                     if (lesson) {
                         lesson.slots++;
                     }
@@ -180,7 +180,7 @@ createApp({
             }
         },
         canIncreaseQuantity(lessonId) {
-            const lesson = this.lessons.find(l => l.id === lessonId);
+            const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
             return lesson && lesson.slots > 0;
         },
         isCheckoutValid() {
