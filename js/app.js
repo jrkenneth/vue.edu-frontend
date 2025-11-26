@@ -117,8 +117,8 @@ createApp({
             }
 
             // Check if lesson already in cart
-            const lessonId = lesson._id || lesson.id;
-            const existingItem = this.cart.find(item => (item._id || item.id) === lesson.id);
+            const lessonId = lesson._id;
+            const existingItem = this.cart.find(item => item._id === lessonId);
             if (existingItem) {
                 // Increase quantity
                 existingItem.quantity++;
@@ -126,7 +126,6 @@ createApp({
                 // Add new item to cart
                 this.cart.push({
                     _id: lesson._id,
-                    id: lesson.id,
                     subject: lesson.subject,
                     location: lesson.location,
                     price: lesson.price,
@@ -139,11 +138,11 @@ createApp({
             lesson.slots--;
         },
         removeFromCart(lessonId) {
-            const cartIndex = this.cart.findIndex(item => (item._id || item.id) === lessonId);
+            const cartIndex = this.cart.findIndex(item => item._id === lessonId);
             if (cartIndex > -1) {
                 const item = this.cart[cartIndex];
                 // Add all slots back
-                const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
+                const lesson = this.lessons.find(l => l._id === lessonId);
                 if (lesson) {
                     lesson.slots += item.quantity;
                 }
@@ -152,24 +151,24 @@ createApp({
             }
         },
         increaseQuantity(lessonId) {
-            const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
+            const lesson = this.lessons.find(l => l._id === lessonId);
             if (lesson && lesson.slots > 0) {
-                const cartItem = this.cart.find(item => (item._id || item.id) === lessonId);
+                const cartItem = this.cart.find(item => item._id === lessonId);
                 if (cartItem) {
                     cartItem.quantity++;
                     lesson.slots--;
                 }
             } else {
-                const cartItem = this.cart.find(item => item.id === lessonId);
+                const cartItem = this.cart.find(item => item._id === lessonId);
                 alert(`Sorry! No more slots available for ${cartItem.subject}.`);
             }
         },
         decreaseQuantity(lessonId) {
-            const cartItem = this.cart.find(item => (item._id || item.id) === lessonId);
+            const cartItem = this.cart.find(item => item._id === lessonId);
             if (cartItem) {
                 if (cartItem.quantity > 1) {
                     cartItem.quantity--;
-                    const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
+                    const lesson = this.lessons.find(l => l._id === lessonId);
                     if (lesson) {
                         lesson.slots++;
                     }
@@ -180,7 +179,7 @@ createApp({
             }
         },
         canIncreaseQuantity(lessonId) {
-            const lesson = this.lessons.find(l => (l._id || l.id) === lessonId);
+            const lesson = this.lessons.find(l => l._id === lessonId);
             return lesson && lesson.slots > 0;
         },
         isCheckoutValid() {
